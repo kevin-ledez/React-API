@@ -1,52 +1,72 @@
 import React, { useState } from "react";
-import "./MovieSearch.css";
 
 const MovieSearch = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [movies, setMovies] = useState([]);
+  const [results, setResults] = useState([]);
 
   const API_KEY = "005b56149e8ba5468ce2c4974c5d4cb9";
-  const BASE_URL = "https://api.themoviedb.org/3/search/person";
+  const BASE_URL = "https://api.themoviedb.org/3";
 
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(
-        `${BASE_URL}?api_key=${API_KEY}&query=${searchQuery}`
+      // Recherche des films associés à l'acteur
+      const actorResponse = await fetch(
+        `${BASE_URL}/search/person?api_key=${API_KEY}&query=${searchQuery}`
       );
-      const data = await response.json();
-      if (data.results && data.results.length > 0) {
-        // Assuming the first result is the closest match for the actor
-        const actorId = data.results[0].id;
-        const movieResponse = await fetch(
-          `https://api.themoviedb.org/3/person/${actorId}/movie_credits?api_key=${API_KEY}`
-        );
-        const movieData = await movieResponse.json();
-        setMovies(movieData.cast);
-      } else {
-        setMovies([]);
-      }
+      const actorData = await actorResponse.json();
+      const actorId = actorData.results[0]?.id || null;
+
+      // Recherche des films avec le mot clé dans le titre
+      const movieResponse = await fetch(
+        `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${searchQuery}`
+      );
+      const movieData = await movieResponse.json();
+
+      // Combinaison des résultats des deux recherches
+      const actorMovies = actorId ? await getMoviesForActor(actorId) : [];
+      const combinedResults = [...movieData.results, ...actorMovies];
+      setResults(combinedResults);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
+  // Fonction pour obtenir les films associés à un acteur
+  const getMoviesForActor = async (actorId) => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/person/${actorId}/movie_credits?api_key=${API_KEY}`
+      );
+      const data = await response.json();
+      return data.cast || [];
+    } catch (error) {
+      console.error("Error fetching actor movies:", error);
+      return [];
+    }
+  };
+
   return (
     <div>
-      <h1>Recherche de films par acteur</h1>
       <form onSubmit={handleSearch}>
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Entrez le nom de l'acteur"
+          placeholder="Rechercher un acteur ou un mot clé dans le titre"
         />
         <button type="submit">Rechercher</button>
       </form>
       <ul>
-        {movies.map((movie) => (
-          <li key={movie.id}>{movie.title}</li>
-        ))}
+        {results && results.length > 0 ? (
+          results.map((result) => (
+            <li key={result.id}>
+              <p>Titre : {result.title}</p>
+            </li>
+          ))
+        ) : (
+          <li>Aucun résultat trouvé.</li>
+        )}
       </ul>
     </div>
   );
