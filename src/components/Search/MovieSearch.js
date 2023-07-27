@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./MovieSearch.css";
 
 const MovieSearch = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,6 +33,7 @@ const MovieSearch = () => {
 
   return (
     <div>
+      <h1>Recherche de films par acteur</h1>
       <form onSubmit={handleSearch}>
         <input
           type="text"
