@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./MovieSearch.css";
+import logo from "./images/logo-spot.png";
 
 const MovieSearch = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -56,25 +57,27 @@ const MovieSearch = () => {
 
   return (
     <div className="container">
-    <div className="search">
-      <input
-        className="search"
-        type="text"
-        value={searchQuery}
-        onChange={handleChange} // Appel de la fonction handleChange lorsqu'il y a un changement dans l'input
-        placeholder="Rechercher un acteur ou un mot clé dans le titre"
-      />
-      <ul>
-        {results && results.length > 0 ? (
-          results.map((result) => (
-            //console.log(result),
-            <li key={result.id}>
-              <p>Titre : {result.title}</p>
-            </li>
-          ))
-        ) : ('')}
-      </ul>
-    </div>
+      <img src={logo} alt="logo" width={300} height={110} className="logo" />
+      <div className="search">
+        <input className="search-input" type="text" value={searchQuery} onChange={handleChange} placeholder="Rechercher un acteur, un film ou un mot clé dans le titre"
+        />
+        <ul>
+          {results && results.length > 0
+            ? results.map(
+                (result) => (
+                  console.log(result),
+                  (
+                    <li key={result.id}>
+                      <img src={`https://image.tmdb.org/t/p/w500${result.poster_path}`} width={130} alt="poster" />
+                      <p>Titre : {result.title}</p>
+                      <p>Date de sortie : {result.release_date}</p>
+                    </li>
+                  )
+                )
+              )
+            : ""}
+        </ul>
+      </div>
     </div>
   );
 };
