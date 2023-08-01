@@ -59,7 +59,12 @@ const MovieSearch = () => {
     <div className="container">
       <img src={logo} alt="logo" width={300} height={110} className="logo" />
       <div className="search">
-        <input className="search-input" type="text" value={searchQuery} onChange={handleChange} placeholder="Rechercher un acteur, un film ou un mot clé dans le titre"
+        <input
+          className="search-input"
+          type="text"
+          value={searchQuery}
+          onChange={handleChange}
+          placeholder="Rechercher un acteur, un film ou un mot clé dans le titre"
         />
         <ul>
           {results && results.length > 0
@@ -69,8 +74,9 @@ const MovieSearch = () => {
                   (
                     <li key={result.id}>
                       <img src={`https://image.tmdb.org/t/p/w500${result.poster_path}`} width={130} alt="poster" />
-                      <p>Titre : {result.title}</p>
-                      <p>Date de sortie : {result.release_date}</p>
+                      <p><b>Titre :</b> {result.title}</p>
+                      <p><b>Date de sortie :</b> {result.release_date}</p>
+                      <p><b>Synopsis :</b> {result.overview}</p>
                     </li>
                   )
                 )
