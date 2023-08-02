@@ -1,5 +1,6 @@
 {
   "name": "react-api",
+  "homepage": "https://kevin-ledez.github.io/React-API",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
